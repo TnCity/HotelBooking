@@ -1,0 +1,286 @@
+﻿@model HotelBooking.Models.BookingHistoryVM
+
+@{
+    ViewData["Title"] = "Booking History";
+}
+
+<div class="container mt-4">
+
+
+
+    <h2 class="text-center mb-4">Upcoming Booking</h2>
+
+
+
+    <!----------------------------------------- DATE RANGE FILTER -------------------------------------------------->
+
+    <form method="get" asp-action="History" class="row g-3 mb-4 align-items-end">
+
+        <div class="col-md-3">
+            <label class="form-label fw-bold">From Date</label>
+            <input type="date"
+                   name="fromDate"
+                   value="@ViewBag.FromDate"
+                   class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label fw-bold">To Date</label>
+            <input type="date"
+                   name="toDate"
+                   value="@ViewBag.ToDate"
+                   class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary">
+                🔍 Show Result
+            </button>
+        </div>
+
+    </form>
+
+    <!-<!------------------------------------------ BOOKING GRID ------------------------------------------->
+
+    <div style="overflow-x:auto;">
+        <table class="table table-bordered text-center">
+            <thead class="table-success">
+                <tr>
+                    <th>Room</th>
+
+                    @foreach (var date in Model.Dates)
+                    {
+                        <th style="min-width:90px;">
+                            @date.ToString("dd-MM-yyyy")
+                        </th>
+                    }
+
+                </tr>
+            </thead>
+            
+            <tbody>
+
+                @foreach (var room in Model.Rooms)
+                {
+                    <tr>
+
+                        <td class="fw-bold">
+                            @room.RoomNumber
+                        </td>
+
+                        @foreach (var date in Model.Dates)
+                        {
+                            var booking = Model.Booking.FirstOrDefault(b =>
+                            b.RoomId == room.RoomId &&
+                            date >= b.CheckInDate &&
+                            date < b.CheckOutDate
+                            );
+
+                            bool isBooked = booking != null;
+                            
+
+                            <td class="room-cell @(isBooked ? "booked" : "available")"
+                                data-roomid="@room.RoomId"
+                                data-date="@date.ToString("yyyy-MM-dd")"
+                                data-bs-toggle="tooltip"
+                                data-bs-html="true"
+                                title="@(isBooked ? $"<b>Customer:</b> {booking.CustomerName}<br><b>CheckIn:</b> {booking.CheckInDate:dd-MM-yyyy}<br><b>CheckOut:</b> {booking.CheckOutDate:dd-MM-yyyy}" : "Available")">
+
+                                @(isBooked ? "✔" : "✖")
+                            </td>
+                        }
+
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+    <!----------------------------------------- SAVE BUTTON ----------------------------------------->
+
+    <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-success btn-lg" onclick="saveChanges()">
+            Save Changes
+        </button>
+    </div>
+
+</div>
+
+<style>
+
+    .room-cell {
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+        .room-cell.available {
+            background-color: #198754 !important;
+            color: white;
+        }
+
+        .room-cell.booked {
+            background-color: #dc3545 !important;
+            color: white;
+        }
+         
+        .room-cell:hover {
+            opacity: 0.8;
+        }
+
+</style>
+
+<script>
+
+        let changes = [];
+
+        //=====================================================================================================
+                                             // for redirect to Booking page
+    //===========================================================================================================
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        document.querySelectorAll(".room-cell").forEach(cell => {
+
+            cell.addEventListener("click", function () {
+
+                let roomId = this.dataset.roomid;
+                let date = this.dataset.date;
+
+                // If cell is available → redirect to booking page
+                if (this.classList.contains("available")) {
+
+                    window.location.href =
+                        "/Room/Book?roomId=" + roomId + "&checkIn=" + date;
+
+                    return;
+                }
+
+                // If already booked → allow toggle (optional)
+                let status;
+
+                if (this.classList.contains("booked")) {
+
+                    this.classList.remove("booked");
+                    this.classList.add("available");
+                    this.innerHTML = "✖";
+                    status = "Available";
+
+                }
+
+                let existing = changes.find(x => x.roomId == roomId && x.date == date);
+
+                if (existing) {
+                    existing.status = status;
+                } else {
+                    changes.push({
+                        roomId: roomId,
+                        date: date,
+                        status: status
+                    });
+                }
+
+            });
+
+        });
+
+    });
+    //=================================================================================================
+    //--------------------------For chenge status in a single click by Admin--------------------//
+
+    //     document.addEventListener("DOMContentLoaded", function () {
+
+    //     document.querySelectorAll(".room-cell").forEach(cell => {
+
+    //         cell.addEventListener("click", function () {
+
+    //             let roomId = this.dataset.roomid;
+    //             let date = this.dataset.date;
+    //             let status;
+
+    //             if (this.classList.contains("available")) {
+
+    //                 this.classList.remove("available");
+    //                 this.classList.add("booked");
+    //                 this.innerHTML = "✔";
+    //                 status = "Booked";
+
+    //             }
+    //             else {
+
+    //                 this.classList.remove("booked");
+    //                 this.classList.add("available");
+    //                 this.innerHTML = "✖";
+    //                 status = "Available";
+
+    //             }
+
+    //             let existing = changes.find(x => x.roomId == roomId && x.date == date);
+
+    //             if (existing) {
+    //                 existing.status = status;
+    //             }
+    //             else {
+    //                 changes.push({
+    //                     roomId: roomId,
+    //                     date: date,
+    //                     status: status
+    //                 });
+    //             }
+
+    //         });
+
+    //     });
+
+    // });
+
+    function saveChanges() {
+
+        if (changes.length === 0) {
+            alert("No changes to save");
+            return;
+        }
+
+        fetch('/Booking/SaveAvailability', {
+
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify(changes)
+
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            alert("Changes Saved Successfully");
+
+            location.reload();
+
+        })
+        .catch(err => {
+
+            alert("Error saving changes");
+
+        });
+
+    }
+
+</script>
+
+<!---- for BootStrap toolpit Show Customer details when mouse howver on block ---->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+
+    });
+</script>

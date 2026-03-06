@@ -1,0 +1,42 @@
+﻿@model List<HotelBooking.Models.BookingListModel>
+
+@{
+    ViewData["Title"] = "All Bookings";
+}
+
+<h2>All Bookings</h2>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Booking Id</th>
+            <th>Room Number</th>
+            <th>Customer Name</th>
+            <th>Check-In Date</th>
+            <th>Check-Out Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Count > 0)
+        {
+            foreach (var booking in Model)
+            {
+                <tr>
+                    <td>@booking.BookingId</td>
+                    <td>@booking.RoomNumber</td>
+                    <td>@booking.CustomerName</td>
+                    <td>@booking.CheckInDate.ToString("dd-MM-yyyy")</td>
+                    <td>@booking.CheckOutDate.ToString("dd-MM-yyyy")</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center text-danger">
+                    No bookings found.
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
