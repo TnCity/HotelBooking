@@ -1,17 +1,10 @@
 ﻿@model HotelBooking.Models.BookingModel
 
-@if (ViewBag.Success != null)
-{
-    <div class="alert alert-success text-center">
-        @ViewBag.Success
-    </div>
-}
-
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
 
-            <div class="card shadow-lg border-0">
+            <div class="card shadow-lg">
 
                 <div class="card-header bg-primary text-white text-center">
                     <h4>Room Booking</h4>
@@ -19,18 +12,17 @@
 
                 <div class="card-body">
 
-                    @if (ViewBag.Error != null)
+                    @if (ViewBag.Success != null)
                     {
-                        <div class="alert alert-danger text-center">
-                            @ViewBag.Error
+                        <div class="alert alert-success text-center">
+                            @ViewBag.Success
                         </div>
                     }
 
-                    <!-- FIXED: Action name -->
-                    <form asp-action="Book" method="post">
+                    <form asp-action="Create" method="post">
 
                         <div class="mb-3">
-                            <label class="form-label">Select Room*</label>
+                            <label class="form-label">Select Room</label>
                             <select asp-for="RoomId" asp-items="ViewBag.Rooms" class="form-select">
                                 <option value="">-- Select Room --</option>
                             </select>
@@ -38,19 +30,19 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Customer Name*</label>
+                            <label class="form-label">Customer Name</label>
                             <input asp-for="CustomerName" class="form-control" placeholder="Enter customer name" />
                             <span asp-validation-for="CustomerName" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Check-In Date*</label>
+                            <label class="form-label">Check-In Date</label>
                             <input asp-for="CheckInDate" type="date" class="form-control" />
                             <span asp-validation-for="CheckInDate" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Check-Out Date*</label>
+                            <label class="form-label">Check-Out Date</label>
                             <input asp-for="CheckOutDate" type="date" class="form-control" />
                             <span asp-validation-for="CheckOutDate" class="text-danger"></span>
                         </div>

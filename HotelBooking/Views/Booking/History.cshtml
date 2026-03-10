@@ -57,7 +57,7 @@
 
                 </tr>
             </thead>
-            
+
             <tbody>
 
                 @foreach (var room in Model.Rooms)
@@ -77,7 +77,7 @@
                             );
 
                             bool isBooked = booking != null;
-                            
+
 
                             <td class="room-cell @(isBooked ? "booked" : "available")"
                                 data-roomid="@room.RoomId"
@@ -123,7 +123,7 @@
             background-color: #dc3545 !important;
             color: white;
         }
-         
+
         .room-cell:hover {
             opacity: 0.8;
         }

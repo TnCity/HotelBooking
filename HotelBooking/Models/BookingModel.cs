@@ -6,10 +6,11 @@ namespace HotelBooking.Models
 {
     public class BookingModel
     {
+        public int BookingId { get; set; }
         [Required]
         public int RoomId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Customer Name is required")]
         public string CustomerName { get; set; }
 
         [Required]

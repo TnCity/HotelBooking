@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Data;
@@ -45,8 +46,7 @@ public class RoomController : Controller
     }
 
     //--------------------------------------------------------------------------------------------------------------
-    //  BOOKING FORM (GET)
-
+    //  // BOOKING FORM (GET)
     [HttpGet]
     public IActionResult Book(int? roomId, DateTime? checkIn)
     {
@@ -73,7 +73,8 @@ public class RoomController : Controller
         return View(model);
     }
 
-    // 3️⃣ ADD BOOKING (POST)
+
+    // ADD BOOKING (POST)
     [HttpPost]
     public IActionResult Book(BookingModel model)
     {
@@ -100,7 +101,17 @@ public class RoomController : Controller
                 con.Open();
                 cmd.ExecuteNonQuery();
             }
-            return RedirectToAction("Index");
+
+            // ✅ SUCCESS MESSAGE (NO REDIRECT)
+            ViewBag.Success = "Booking successful";
+
+            // reload dropdown
+            ViewBag.Rooms = GetRooms();
+
+            // clear form
+            ModelState.Clear();
+
+            return View();
         }
         catch (Exception ex)
         {
