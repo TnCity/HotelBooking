@@ -1,0 +1,33 @@
+﻿@model List<HotelBooking.Models.RoomStatusModel>
+
+<table class="table table-bordered">
+    <div class="mb-3">
+        <span class="badge bg-primary p-3 fs-6">
+            <h4> Today Booking → @DateTime.Now.ToString("dd-MM-yyyy") </h4>
+        </span>
+    </div>
+    <thead>
+        <tr>
+            <th>Room Number</th>
+            <th>Current Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var room in Model)
+        {
+            <tr>
+                <td>@room.RoomNumber</td>
+                <td>
+                    @if (room.Status == "Booked")
+                    {
+                        <span class="text-danger">Booked</span>
+                    }
+                    else
+                    {
+                        <span class="text-success">Available</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

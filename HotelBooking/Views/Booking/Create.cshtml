@@ -1,0 +1,70 @@
+﻿@model HotelBooking.Models.BookingModel
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="card shadow-lg">
+
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>Room Booking</h4>
+                </div>
+
+                <div class="card-body">
+
+                    @if (ViewBag.Success != null)
+                    {
+                        <div class="alert alert-success text-center">
+                            @ViewBag.Success
+                        </div>
+                    }
+
+                    <form asp-action="Create" method="post">
+
+                        <div class="mb-3">
+                            <label class="form-label">Select Room</label>
+                            <select asp-for="RoomId" asp-items="ViewBag.Rooms" class="form-select">
+                                <option value="">-- Select Room --</option>
+                            </select>
+                            <span asp-validation-for="RoomId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Customer Name</label>
+                            <input asp-for="CustomerName" class="form-control" placeholder="Enter customer name" />
+                            <span asp-validation-for="CustomerName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Check-In Date</label>
+                            <input asp-for="CheckInDate" type="date" class="form-control" />
+                            <span asp-validation-for="CheckInDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Check-Out Date</label>
+                            <input asp-for="CheckOutDate" type="date" class="form-control" />
+                            <span asp-validation-for="CheckOutDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                Book Now
+                            </button>
+                        </div>
+
+                        
+
+                    </form>
+                    
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
